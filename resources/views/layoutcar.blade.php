@@ -49,7 +49,6 @@
               <form class="d-flex" role="search" method="POST" action="{{ route('search') }}" onsubmit="return false;">
                 @csrf
                 <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search" id="search-input">
-                <button class="btn btn-outline-success" type="submit" id="search-button">Search</button>
               </form>
             </ul>
             <div class="d-flex align-items-center">
