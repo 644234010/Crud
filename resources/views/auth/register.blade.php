@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Register') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
+                    <form method="POST" action="{{ route('register') }}" onsubmit="showRegisterAlert(event)">
                         @csrf
 
                         <div class="row mb-3">
@@ -74,4 +74,32 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function showRegisterAlert(event) {
+        event.preventDefault();
+        let form = event.target;
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, register it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Registered!",
+                    text: "Your registration is successful.",
+                    icon: "success"
+                }).then(() => {
+                    form.submit();
+                });
+            }
+        });
+    }
+</script>
 @endsection

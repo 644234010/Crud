@@ -10,21 +10,32 @@ class admincontroller extends Controller
 {
     public function index()
     {
-        $car_products = DB::table('car_products')->orderBy('id', 'desc')->paginate(3);
-        return view('home', compact('car_products'));
+        try {
+            $car_products = DB::table('car_products')->orderBy('id', 'desc')->paginate(3);
+            return view('home', compact('car_products'));
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
-    public function show($id)   
+    public function show($id)
     {
-        $car = DB::table('car_products')->find($id); 
-        return view('show', compact('car'));
+        try {
+            $car = DB::table('car_products')->find($id);
+            return view('show', compact('car'));
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
-    public function create(){
+    public function create()
+    {
         return view('from');
     }
 
-    public function insert(Request $request){
+    public function insert(Request $request)
+    {
+        try {
         $request->validate([
             'car_name' => 'required|max:50',
             'car_detail' => 'required|max:1000',
@@ -38,47 +49,61 @@ class admincontroller extends Controller
             'car_detail.max' => 'กรุณากรอกรายละเอียดไม่เกิน 1000 ตัวอักษร',
             'car_price.required' => 'กรุณากรอกราคา',
             'car_price.numeric' => 'กรุณากรอกตัวเลขเท่านั้นสำหรับราคา',
+            'car_image.required' => 'กรุณาอัปโหลดรูปภาพ',
             'car_image.image' => 'รูปภาพต้องเป็นไฟล์ประเภท jpeg, png, jpg, gif หรือ svg',
             'car_image.mimes' => 'รูปภาพต้องเป็นไฟล์ประเภท jpeg, png, jpg, gif หรือ svg',
             'car_image.max' => 'ขนาดรูปภาพต้องไม่เกิน 3048KB'
         ]);
 
-        //dd($request->all());
-
-        if ($request->hasFile('car_image')) {
-            $imagePath = $request->file('car_image')->store('car_images', 'public');
-        } else {
-            $imagePath = null;
-        }        
-
-        $data =[
-            'car_name'=> $request->car_name,
-            'car_detail'=>$request->car_detail,
-            'car_price'=> $request->car_price,
-            'car_image' => $imagePath
-        ];
         
-        $carproduct = DB::table('car_products')->insert($data);
-        if($carproduct){
-            return response()->json([
-                'success' => true,
-                'message' => 'Data saved successfully'
-            ]);
+            if ($request->hasFile('car_image')) {
+                $imagePath = $request->file('car_image')->store('car_images', 'public');
+            } else {
+                $imagePath = null;
+            }
+
+            $data = [
+                'car_name' => $request->car_name,
+                'car_detail' => $request->car_detail,
+                'car_price' => $request->car_price,
+                'car_image' => $imagePath
+            ];
+
+            $carproduct = DB::table('car_products')->insert($data);
+            if ($carproduct) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data saved successfully'
+                ]);
+            }
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
-        // return redirect()->route('home');
     }
 
-    public function delete($id){
-        DB::table('car_products')->where('id',$id)->delete();
-        return redirect('/home');
+    public function delete($id)
+    {
+        try {
+            DB::table('car_products')->where('id', $id)->delete();
+            return redirect('/home');
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
-    public function edit($id){
-        $home = DB::table('car_products')->where('id', $id)->first();
-        return view('edit', compact('home'));
+    public function edit($id)
+    {
+        try {
+            $home = DB::table('car_products')->where('id', $id)->first();
+            return view('edit', compact('home'));
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
+        try {
         $request->validate([
             'car_name' => 'required|max:50',
             'car_detail' => 'required|max:1000',
@@ -97,39 +122,48 @@ class admincontroller extends Controller
             'car_image.max' => 'ขนาดรูปภาพต้องไม่เกิน 3048KB'
         ]);
 
-        if ($request->hasFile('car_image')) {
-            $imagePath = $request->file('car_image')->store('car_images', 'public');
-        } else {
-            $imagePath = null;
-        }        
-
-        $data =[
-            'car_name'=> $request->car_name,
-            'car_detail'=>$request->car_detail,
-            'car_price'=> $request->car_price,
-            'car_image' => $imagePath
-        ];
         
-        DB::table('car_products')->where('id', $id)->update($data);
-        return redirect('/home');
+            if ($request->hasFile('car_image')) {
+                $imagePath = $request->file('car_image')->store('car_images', 'public');
+            } else {
+                $imagePath = null;
+            }
+
+            $data = [
+                'car_name' => $request->car_name,
+                'car_detail' => $request->car_detail,
+                'car_price' => $request->car_price,
+                'car_image' => $imagePath
+            ];
+
+            DB::table('car_products')->where('id', $id)->update($data);
+            return redirect('/home');
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $car_products = DB::table('car_products')
-            ->where('car_name', 'like', "%{$query}%")
-            ->orWhere('car_detail', 'like', "%{$query}%")
-            ->orderBy('id', 'desc')
-            ->paginate(3);
 
-        $car_products->appends(['query' => $query]);
+        try {
+            $car_products = DB::table('car_products')
+                ->where('car_name', 'like', "%{$query}%")
+                ->orWhere('car_detail', 'like', "%{$query}%")
+                ->orderBy('id', 'desc')
+                ->paginate(3);
 
-        if ($request->ajax()) {
-            return view('car_products_list', compact('car_products'))->render();
+            $car_products->appends(['query' => $query]);
+
+            if ($request->ajax()) {
+                return view('car_products_list', compact('car_products'))->render();
+            }
+
+            return view('home', compact('car_products', 'query'));
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
-
-        return view('home', compact('car_products', 'query'));
     }
 
 
