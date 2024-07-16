@@ -38,7 +38,12 @@ class admincontroller extends Controller
             'car_detail.max' => 'กรุณากรอกรายละเอียดไม่เกิน 1000 ตัวอักษร',
             'car_price.required' => 'กรุณากรอกราคา',
             'car_price.numeric' => 'กรุณากรอกตัวเลขเท่านั้นสำหรับราคา',
+            'car_image.image' => 'รูปภาพต้องเป็นไฟล์ประเภท jpeg, png, jpg, gif หรือ svg',
+            'car_image.mimes' => 'รูปภาพต้องเป็นไฟล์ประเภท jpeg, png, jpg, gif หรือ svg',
+            'car_image.max' => 'ขนาดรูปภาพต้องไม่เกิน 3048KB'
         ]);
+
+        //dd($request->all());
 
         if ($request->hasFile('car_image')) {
             $imagePath = $request->file('car_image')->store('car_images', 'public');
@@ -53,8 +58,14 @@ class admincontroller extends Controller
             'car_image' => $imagePath
         ];
         
-        DB::table('car_products')->insert($data);
-        return redirect()->route('home');
+        $carproduct = DB::table('car_products')->insert($data);
+        if($carproduct){
+            return response()->json([
+                'success' => true,
+                'message' => 'Data saved successfully'
+            ]);
+        }
+        // return redirect()->route('home');
     }
 
     public function delete($id){
@@ -81,6 +92,9 @@ class admincontroller extends Controller
             'car_detail.max' => 'กรุณากรอกรายละเอียดไม่เกิน 1000 ตัวอักษร',
             'car_price.required' => 'กรุณากรอกราคา',
             'car_price.numeric' => 'กรุณากรอกตัวเลขเท่านั้นสำหรับราคา',
+            'car_image.image' => 'รูปภาพต้องเป็นไฟล์ประเภท jpeg, png, jpg, gif หรือ svg',
+            'car_image.mimes' => 'รูปภาพต้องเป็นไฟล์ประเภท jpeg, png, jpg, gif หรือ svg',
+            'car_image.max' => 'ขนาดรูปภาพต้องไม่เกิน 3048KB'
         ]);
 
         if ($request->hasFile('car_image')) {

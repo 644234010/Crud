@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
+                    <form method="POST" action="{{ route('login') }}" onsubmit="showLoginAlert(event)">
                         @csrf
 
                         <div class="row mb-3">
@@ -70,4 +70,35 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function showLoginAlert(event) {
+        event.preventDefault();
+        let form = event.target;
+
+        let timerInterval;
+        Swal.fire({
+            title: "Auto close alert!",
+            html: "I will close in <b></b> milliseconds.",
+            timer: 1000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+                const timer = Swal.getHtmlContainer().querySelector("b");
+                timerInterval = setInterval(() => {
+                    timer.textContent = Swal.getTimerLeft();
+                }, 100);
+            },
+            willClose: () => {
+                clearInterval(timerInterval);
+            }
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+                console.log("I was closed by the timer");
+                form.submit();
+            }
+        });
+    }
+</script>
 @endsection

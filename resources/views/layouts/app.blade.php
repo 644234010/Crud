@@ -98,5 +98,6 @@
     <footer>
         <p>&copy; 2024 KITTIPAT_CAR. All Rights Reserved.</p>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

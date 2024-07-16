@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
     <title>@yield('title')</title>
     <style>
@@ -49,16 +50,15 @@
               <form class="d-flex" role="search" method="POST" action="{{ route('search') }}" onsubmit="return false;">
                 @csrf
                 <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search" id="search-input">
-                <button class="btn btn-outline-success" type="submit" id="search-button">Search</button>
               </form>
             </ul>
             <div class="d-flex align-items-center">
               <span class="navbar-text me-3 p-2 border border-primary rounded">
                 <i class="bi bi-person-circle"></i> {{ Auth::user()->name }}
               </span>
-              <form action="{{ route('logout') }}" method="POST" class="d-inline">
+              <form action="{{ route('logout') }}" method="POST" class="d-inline" id="logout-form">
                 @csrf
-                <button type="submit" class="btn btn-success ms-3">Logout</button>
+                <button type="submit" class="btn btn-success ms-3" onclick="confirmLogout(event)">Logout</button>
               </form>
             </div>
           </div>
@@ -73,6 +73,29 @@
         <p>&copy; 2024 KITTIPAT_CAR. All Rights Reserved.</p>
       </footer>
 
-      
+      <script>
+        function confirmLogout(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You will be logged out!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, log me out!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Logged out!',
+                        text: 'You have been logged out.',
+                        icon: 'success'
+                    }).then(() => {
+                        document.getElementById('logout-form').submit();
+                    });
+                }
+            });
+        }
+      </script>
 </body>
 </html>
