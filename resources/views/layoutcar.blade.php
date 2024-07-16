@@ -53,7 +53,7 @@
               </form>
             </ul>
             <div class="d-flex align-items-center">
-              <span class="navbar-text me-3 p-2 border border-primary rounded">
+              <span id="user-icon" class="navbar-text me-3 p-2 border border-primary rounded">
                 <i class="bi bi-person-circle"></i> {{ Auth::user()->name }}
               </span>
               <form action="{{ route('logout') }}" method="POST" class="d-inline" id="logout-form">
@@ -74,6 +74,21 @@
       </footer>
 
       <script>
+        document.getElementById('user-icon').addEventListener('click', function() {
+            Swal.fire({
+                title: "ยินดีต้อนรับสู่การชมแมวรุ้ง",
+                width: 600,
+                padding: "3em",
+                color: "#716add",
+                backdrop: `
+                    rgba(0,0,123,0.4)
+                    url("/img/003.gif")
+                    left top
+                    no-repeat
+                `
+            });
+        });
+
         function confirmLogout(event) {
             event.preventDefault();
             Swal.fire({

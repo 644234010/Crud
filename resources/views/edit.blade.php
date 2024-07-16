@@ -65,7 +65,7 @@
                     if (result.isConfirmed) {
                         $('#editCarForm').off('submit').submit();
                     } else if (result.isDenied) {
-                        Swal.fire("Changes are not saved", "", "info");
+                        Swal.fire("Changes are not edit", "", "info");
                     }
                 });
             });

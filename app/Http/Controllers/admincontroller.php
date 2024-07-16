@@ -35,7 +35,7 @@ class admincontroller extends Controller
 
     public function insert(Request $request)
     {
-        try {
+        
         $request->validate([
             'car_name' => 'required|max:50',
             'car_detail' => 'required|max:1000',
@@ -55,7 +55,7 @@ class admincontroller extends Controller
             'car_image.max' => 'ขนาดรูปภาพต้องไม่เกิน 3048KB'
         ]);
 
-        
+        try {        
             if ($request->hasFile('car_image')) {
                 $imagePath = $request->file('car_image')->store('car_images', 'public');
             } else {
@@ -103,7 +103,7 @@ class admincontroller extends Controller
 
     public function update(Request $request, $id)
     {
-        try {
+        
         $request->validate([
             'car_name' => 'required|max:50',
             'car_detail' => 'required|max:1000',
@@ -122,7 +122,7 @@ class admincontroller extends Controller
             'car_image.max' => 'ขนาดรูปภาพต้องไม่เกิน 3048KB'
         ]);
 
-        
+        try {        
             if ($request->hasFile('car_image')) {
                 $imagePath = $request->file('car_image')->store('car_images', 'public');
             } else {
